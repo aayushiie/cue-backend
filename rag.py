@@ -15,7 +15,7 @@ import os
 #     model_name="sentence-transformers/all-MiniLM-L6-v2"
 # )
 
-embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
+embeddings = GoogleGenerativeAIEmbeddings(model="text-embedding-004")
 
 vector_store = None
 transcript_text = ""
