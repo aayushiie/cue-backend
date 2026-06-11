@@ -32,7 +32,7 @@ def process_video(video_id: str):
             proxy_username=os.getenv("WEBSHARE_USERNAME"),
             proxy_password=os.getenv("WEBSHARE_PASSWORD"),
         )
-        api = YouTubeTranscriptApi(proxies=proxy_config)
+        api = YouTubeTranscriptApi(proxy_config=proxy_config)
         transcript_list = api.fetch(
             video_id,
             languages=["en", "hi"]
