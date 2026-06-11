@@ -15,7 +15,8 @@ import os
 #     model_name="sentence-transformers/all-MiniLM-L6-v2"
 # )
 
-embeddings = GoogleGenerativeAIEmbeddings(model="text-embedding-004")
+# embeddings = GoogleGenerativeAIEmbeddings(model="text-embedding-004")
+embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
 
 vector_store = None
 transcript_text = ""
@@ -57,7 +58,7 @@ def process_video(video_id: str):
         res = requests.get(
             "https://api.supadata.ai/v1/youtube/transcript",
             params={"videoId": video_id},
-            headers={"x-api-key": os.getenv("SUPADATA_API_KEY")}
+            headers={"x-api-key": os.getenv("SUPADATA_API_KEY")},
             timeout=30
         )
 
