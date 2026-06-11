@@ -4,7 +4,7 @@ from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 # from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from langchain_community.vectorstores import FAISS
+from langchain_community.vectorstores import Chroma
 from dotenv import load_dotenv
 load_dotenv()
 from groq import Groq
@@ -91,7 +91,8 @@ def process_video(video_id: str):
         for c in raw_chunks
     ]
 
-    vector_store = FAISS.from_documents(documents, embeddings)
+    # vector_store = FAISS.from_documents(documents, embeddings)
+    vector_store = Chroma.from_documents(documents, embeddings)
 
     return {
         "status": "success",

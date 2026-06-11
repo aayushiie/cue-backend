@@ -6,7 +6,7 @@ langchain-core
 langchain-text-splitters
 langchain-google-genai
 langchain-community
-faiss-cpu
+chromadb
 groq
 python-dotenv
 google-generativeai
