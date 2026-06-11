@@ -1,5 +1,6 @@
-from youtube_transcript_api.proxies import WebshareProxyConfig
-from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound
+# from youtube_transcript_api.proxies import WebshareProxyConfig
+# from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound
+import requests
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 # from langchain_huggingface import HuggingFaceEmbeddings
@@ -27,39 +28,60 @@ def process_video(video_id: str):
     vector_store = None
     transcript_text = ""
 
+    # try:
+    #     proxy_config = WebshareProxyConfig(
+    #         proxy_username=os.getenv("WEBSHARE_USERNAME"),
+    #         proxy_password=os.getenv("WEBSHARE_PASSWORD"),
+    #     )
+    #     api = YouTubeTranscriptApi(proxy_config=proxy_config)
+    #     transcript_list = api.fetch(
+    #         video_id,
+    #         languages=["en", "hi"]
+    #     )
+    # except TranscriptsDisabled:
+    #     return {
+    #         "status": "error",
+    #         "message": "Transcripts are disabled for this video."
+    #     }
+    # except NoTranscriptFound:
+    #     return {
+    #         "status": "error",
+    #         "message": "No transcript found for this video in English or Hindi."
+    #     }
+    # except Exception as e:
+    #     return {
+    #         "status": "error",
+    #         "message": f"Failed to fetch transcript: {str(e)}"
+    #     }
     try:
-        proxy_config = WebshareProxyConfig(
-            proxy_username=os.getenv("WEBSHARE_USERNAME"),
-            proxy_password=os.getenv("WEBSHARE_PASSWORD"),
+        res = requests.get(
+            "https://api.supadata.ai/v1/youtube/transcript",
+            params={"videoId": video_id, "lang": "en"},
+            headers={"x-api-key": os.getenv("SUPADATA_API_KEY")}
         )
-        api = YouTubeTranscriptApi(proxy_config=proxy_config)
-        transcript_list = api.fetch(
-            video_id,
-            languages=["en", "hi"]
-        )
-    except TranscriptsDisabled:
-        return {
-            "status": "error",
-            "message": "Transcripts are disabled for this video."
-        }
-    except NoTranscriptFound:
-        return {
-            "status": "error",
-            "message": "No transcript found for this video in English or Hindi."
-        }
+        data = res.json()
+        if "error" in data:
+            return {"status": "error", "message": "Could not fetch transcript for this video."}
+        
+        transcript_list = data.get("content", [])
+        if not transcript_list:
+            return {"status": "error", "message": "No transcript found for this video."}
+
     except Exception as e:
-        return {
-            "status": "error",
-            "message": f"Failed to fetch transcript: {str(e)}"
-        }
+        return {"status": "error", "message": f"Failed to fetch transcript: {str(e)}"}
     
     timestamp_map = []  # list of (char_offset, start_seconds)
     parts = []
     offset = 0
+    # for chunk in transcript_list:
+    #     parts.append(chunk.text)
+    #     timestamp_map.append((offset, chunk.start))
+    #     offset += len(chunk.text) + 1  # +1 for the space join
     for chunk in transcript_list:
-        parts.append(chunk.text)
-        timestamp_map.append((offset, chunk.start))
-        offset += len(chunk.text) + 1  # +1 for the space join
+        text = chunk.get("text", "").strip()
+        parts.append(text)
+        timestamp_map.append((offset, chunk.get("offset", 0) / 1000))
+        offset += len(text) + 1
 
     transcript_text = " ".join(parts)
 
