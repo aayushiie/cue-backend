@@ -1,4 +1,5 @@
 from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound
+from youtube_transcript_api.proxies import WebshareProxyConfig
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 # from langchain_huggingface import HuggingFaceEmbeddings
@@ -9,12 +10,18 @@ load_dotenv()
 from groq import Groq
 import os
 
+proxy_config = WebshareProxyConfig(
+    proxy_username=os.getenv("WEBSHARE_USERNAME"),
+    proxy_password=os.getenv("WEBSHARE_PASSWORD"),
+)
+
+api = YouTubeTranscriptApi(proxies=proxy_config)
+
 # embeddings = HuggingFaceEmbeddings(
 #     model_name="sentence-transformers/all-MiniLM-L6-v2"
 # )
 
 embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
-
 
 vector_store = None
 transcript_text = ""
