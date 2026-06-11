@@ -1,0 +1,57 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller / Virtual Environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.env
+.venv
+
+# Database and Logs
+*.sqlite3
+*.db
+local.sqlite
+*.log
+logs/
+
+# Extension specific
+*.pem  # Your private extension signing keys!
+
+# --- IDE & Environment ---
+# JetBrains (PyCharm, WebStorm)
+.idea/
+*.iml
+*.iws
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# OS / Misc
+.DS_Store
+Thumbs.db
