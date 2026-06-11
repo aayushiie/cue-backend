@@ -1,16 +1,20 @@
 from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_huggingface import HuggingFaceEmbeddings
+# from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from dotenv import load_dotenv
 load_dotenv()
 from groq import Groq
 import os
 
-embeddings = HuggingFaceEmbeddings(
-    model_name="sentence-transformers/all-MiniLM-L6-v2"
-)
+# embeddings = HuggingFaceEmbeddings(
+#     model_name="sentence-transformers/all-MiniLM-L6-v2"
+# )
+
+embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
+
 
 vector_store = None
 transcript_text = ""
