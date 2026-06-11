@@ -56,9 +56,17 @@ def process_video(video_id: str):
     try:
         res = requests.get(
             "https://api.supadata.ai/v1/youtube/transcript",
-            params={"videoId": video_id, "lang": "en"},
+            params={"videoId": video_id},
             headers={"x-api-key": os.getenv("SUPADATA_API_KEY")}
+            timeout=30
         )
+
+        if res.status_code != 200:
+            return {
+                "status": "error",
+                "message": f"Could not fetch transcript (status {res.status_code}). Video may have no captions."
+            }
+
         data = res.json()
         if "error" in data:
             return {"status": "error", "message": "Could not fetch transcript for this video."}
